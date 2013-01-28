@@ -21,7 +21,7 @@ namespace :deploy do
     puts "    not doing migrate because not a Rails application."
   end
   task :finalize_update do
-    puts "    not doing finalize_update because not a Rails application."
+    run "ln -sfv #{File.join(shared_path, 'public', 'js', 'settings.js')} #{File.join(current_path, 'public', 'js', 'settings.js')}"
   end
   task :start do
     puts "    not doing start because not a Rails application."
