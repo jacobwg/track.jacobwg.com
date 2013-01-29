@@ -2,7 +2,9 @@
 jQuery(function($) {
   var map;
 
-  var marker, circle, info, content, previous_time;
+  var marker, circle, info, content;
+
+  var previous_time = 0;
 
   map = new google.maps.Map(document.getElementById("map_canvas"), {
     center: new google.maps.LatLng(33.122026, -96.621323),
@@ -59,15 +61,13 @@ jQuery(function($) {
 
   var fetchJacobLocation = function() {
     $.getJSON('/location.json', function(data) {
-      if (parseInt(data.timestamp) > previous_time) {
-        return;
-      } else {
+      if (parseInt(data.location.timeStamp) > previous_time) {
         updateJacobLocation({
-          accuracy: data.accuracy,
-          latlng: new google.maps.LatLng(data.latitude, data.longitude),
-          time: moment(data.timestamp)
+          accuracy: data.location.horizontalAccuracy,
+          latlng: new google.maps.LatLng(data.location.latitude, data.location.longitude),
+          time: moment(data.location.timeStamp)
         });
-        previous_time = parseInt(data.timestamp);
+        previous_time = parseInt(data.location.timeStamp);
       }
     });
   };
