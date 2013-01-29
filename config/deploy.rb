@@ -10,8 +10,6 @@ set :deploy_to, '/data/apps/websites/track.jacobwg.com/'
 
 set :use_sudo, false
 
-set :shared_children, shared_children + %w{public/js/settings.js}
-
 namespace :deploy do
   task :migrate do
   end
