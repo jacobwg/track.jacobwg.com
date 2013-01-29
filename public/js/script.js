@@ -22,7 +22,7 @@ jQuery(function($) {
       marker.setMap(map);
     }
 
-    content = Settings.user_name + ' was within ' + e.accuracy + ' meters from this point<br />at ' + e.time.format('h:mm:ss a on MMMM Do, YYYY');
+    content = Settings.user_name + ' was within ' + Math.round(e.accuracy) + ' meters from this point<br />at ' + e.time.format('h:mm:ss a on MMMM Do, YYYY');
 
     if (info) {
       info.setContent(content);
@@ -58,21 +58,20 @@ jQuery(function($) {
   };
 
   var fetchJacobLocation = function() {
-    $.getJSON('http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22http%3A%2F%2Flatitude.google.com%2Flatitude%2Fapps%2Fbadge%2Fapi%3Fuser%3D' + Settings.user_id + '%26type%3Djson%22&format=json&diagnostics=true', function(data) {
-      if (!data.query.results) return;
-      if (parseInt(data.query.results.json.features.properties.timeStamp) > previous_time) {
+    $.getJSON('/location.json', function(data) {
+      if (parseInt(data.timestamp) > previous_time) {
         return;
       } else {
         updateJacobLocation({
-          accuracy: data.query.results.json.features.properties.accuracyInMeters,
-          latlng: new google.maps.LatLng(data.query.results.json.features.geometry.coordinates[1], data.query.results.json.features.geometry.coordinates[0]),
-          time: moment.unix(data.query.results.json.features.properties.timeStamp)
+          accuracy: data.accuracy,
+          latlng: new google.maps.LatLng(data.latitude, data.longitude),
+          time: moment(data.timestamp)
         });
-        previous_time = parseInt(data.query.results.json.features.properties.timeStamp);
+        previous_time = parseInt(data.timestamp);
       }
     });
   };
 
-  setInterval(fetchJacobLocation, 2000);
+  setInterval(fetchJacobLocation, 6000);
 
 });
