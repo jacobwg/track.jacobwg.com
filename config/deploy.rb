@@ -1,10 +1,6 @@
 set :application, 'track-jacob'
 set :repository,  'https://github.com/jacobwg/track-jacob.git'
 
-
-# set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
-# Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
-
 role :web, 'quorra.jacobwg.com'
 role :app, 'quorra.jacobwg.com'
 
@@ -18,19 +14,15 @@ set :shared_children, shared_children + %w{public/js/settings.js}
 
 namespace :deploy do
   task :migrate do
-    puts "    not doing migrate because not a Rails application."
   end
   task :finalize_update do
-    run "cp #{File.join(shared_path, 'public', 'js', 'settings.js')} #{File.join(current_path, 'public', 'js', 'settings.js')}"
+    run "#{try_sudo} cp #{File.join(shared_path, 'config', 'settings.yml')} #{File.join(current_path, 'config', 'settings.yml')}"
   end
   task :start do
-    puts "    not doing start because not a Rails application."
   end
   task :stop do
-    puts "    not doing stop because not a Rails application."
   end
   task :restart do
-    puts "    not doing restart because not a Rails application."
   end
 end
 
