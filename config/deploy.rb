@@ -10,6 +10,8 @@ set :deploy_to, '/data/apps/websites/track.jacobwg.com/'
 
 set :deploy_via, :remote_cache
 
+set :shared_paths, ['config/settings.yml']
+
 set :scm, :git
 set :branch, :master
 
