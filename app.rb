@@ -9,6 +9,7 @@ class App < Sinatra::Base
   end
 
   get '/location.json' do
+  	content_type 'application/json'
     R.updateDevices.last.to_json
   end
 
