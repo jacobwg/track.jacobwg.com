@@ -1,3 +1,6 @@
+var Settings = {
+  user_name: 'Jacob'
+};
 
 jQuery(function($) {
   var map;
