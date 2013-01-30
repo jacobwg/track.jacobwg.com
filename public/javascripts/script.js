@@ -6,6 +6,8 @@ jQuery(function($) {
 
   var previous_time = 0;
 
+  var set_zoom = true;
+
   map = new google.maps.Map(document.getElementById("map_canvas"), {
     center: new google.maps.LatLng(33.122026, -96.621323),
     zoom: 11,
@@ -53,7 +55,11 @@ jQuery(function($) {
       circle.setMap(map);
     }
 
-    map.setZoom(15);
+    if (set_zoom) {
+      map.setZoom(15);
+      set_zoom = false;
+    }
+
     map.panTo(e.latlng);
     info.open(map, marker);
 
