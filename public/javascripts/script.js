@@ -4,9 +4,13 @@ jQuery(function($) {
 
   var marker, circle, info, content;
 
-  var previous_time = 0;
-
-  var set_zoom = true;
+  var previous = {
+    latitude: 0,
+    longitude: 0,
+    accuracy: 0,
+    previous_time: 0,
+    zoom: 0
+  }
 
   map = new google.maps.Map(document.getElementById("map_canvas"), {
     center: new google.maps.LatLng(33.122026, -96.621323),
@@ -14,67 +18,84 @@ jQuery(function($) {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
-  var updateJacobLocation = function(e) {
-
-    if (marker) {
-      marker.setPosition(e.latlng);
-    } else {
+  var getMarker = function() {
+    if (!marker)
       marker = new google.maps.Marker({
-        position: e.latlng,
-        title: 'Jacob\'s Current Location'
+        title: Settings.user_name + '\'s Current Location',
+        map: map
       });
-      marker.setMap(map);
-    }
+    return marker;
+  };
 
-    content = Settings.user_name + ' was within ' + Math.round(e.accuracy) + ' meters from this point<br />at ' + e.time.format('h:mm:ss a on MMMM Do, YYYY');
-
-    if (info) {
-      info.setContent(content);
-    } else {
-      info = new google.maps.InfoWindow({
-        content: content
-      });
-      google.maps.event.addListener(marker, 'click', function() {
-        info.open(map, marker);
-      });
-    }
-
-    if (circle) {
-      circle.setCenter(e.latlng);
-      circle.setRadius(parseInt(e.accuracy));
-    } else {
+  var getCircle = function() {
+    if (!circle)
       circle = new google.maps.Circle({
-        center: e.latlng,
-        radius: parseInt(e.accuracy),
         strokeColor: "#FF0000",
         strokeOpacity: 0.8,
         strokeWeight: 2,
         fillColor: "#FF0000",
-        fillOpacity: 0.35
+        fillOpacity: 0.35,
+        map: map
       });
-      circle.setMap(map);
+    return circle;
+  }
+
+  var getInfo = function() {
+    if (!info) {
+      info = new google.maps.InfoWindow();
+      google.maps.event.addListener(getMarker(), 'click', function() {
+        info.open(map, getMarker());
+      });
+    }
+    return info;
+  }
+
+  var getInfoText = function(data) {
+    return Settings.user_name + ' was within ' + Math.round(data.accuracy) + ' meters from this point<br />at ' + data.moment.format('h:mm:ss a on MMMM Do, YYYY');
+  }
+
+  var updateJacobLocation = function(data) {
+
+    if (data.latitude != previous.latitude || data.longitude != previous.latitude) {
+      previous.latitude = data.latitude;
+      previous.longitude = data.longitude;
+
+      getMarker().setPosition(data.position);
+      getCircle().setCenter(data.position);
     }
 
-    if (set_zoom) {
+    if (data.accuracy != previous.accuracy) {
+      previous.accuracy = data.accuracy;
+
+      getCircle().setRadius(data.accuracy);
+    }
+
+    if (data.accuracy != previous.accuracy || data.time != previous.time) {
+      previous.accuracy = data.accuracy;
+      previous.time = data.time;
+
+      getInfo().setContent(getInfoText(data));
+    }
+
+    if (previous.zoom === 0) {
       map.setZoom(15);
-      set_zoom = false;
+      previous.zoom = 15;
     }
 
-    map.panTo(e.latlng);
-    info.open(map, marker);
-
+    map.panTo(data.position);
+    getInfo().open(map, getMarker());
   };
 
   var fetchJacobLocation = function() {
     $.getJSON('/location.json', function(data) {
-      if (parseInt(data.location.timeStamp) > previous_time) {
-        updateJacobLocation({
-          accuracy: data.location.horizontalAccuracy,
-          latlng: new google.maps.LatLng(data.location.latitude, data.location.longitude),
-          time: moment(data.location.timeStamp)
-        });
-        previous_time = parseInt(data.location.timeStamp);
-      }
+      updateJacobLocation({
+        accuracy: data.location.horizontalAccuracy,
+        latitude: data.location.latitude,
+        longitude: data.location.longitude,
+        time: data.location.timeStamp,
+        position: new google.maps.LatLng(data.location.latitude, data.location.longitude),
+        moment: moment(data.location.timeStamp)
+      });
     });
   };
 
