@@ -1,4 +1,0 @@
-var Settings = {
-  user_id: 'USERID',
-  user_name: 'USERNAME'
-}
