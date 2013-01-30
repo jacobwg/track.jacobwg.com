@@ -2,7 +2,7 @@
 jQuery(function($) {
   var map;
 
-  var marker, circle, info, content;
+  var marker, circle, info, position;
 
   var previous = {
     latitude: 0,
@@ -51,18 +51,10 @@ jQuery(function($) {
   }
 
   var getInfoText = function(data) {
-    return Settings.user_name + ' was within ' + Math.round(data.accuracy) + ' meters from this point<br />at ' + data.moment.format('h:mm:ss a on MMMM Do, YYYY');
+    return Settings.user_name + ' was within ' + Math.round(data.accuracy) + ' meters from this point<br />at ' + moment(data.time).format('h:mm:ss a on MMMM Do, YYYY');
   }
 
   var updateJacobLocation = function(data) {
-
-    if (data.latitude != previous.latitude || data.longitude != previous.latitude) {
-      previous.latitude = data.latitude;
-      previous.longitude = data.longitude;
-
-      getMarker().setPosition(data.position);
-      getCircle().setCenter(data.position);
-    }
 
     if (data.accuracy != previous.accuracy) {
       previous.accuracy = data.accuracy;
@@ -82,8 +74,19 @@ jQuery(function($) {
       previous.zoom = 15;
     }
 
-    map.panTo(data.position);
-    getInfo().open(map, getMarker());
+    if (data.latitude != previous.latitude || data.longitude != previous.latitude) {
+      previous.latitude = data.latitude;
+      previous.longitude = data.longitude;
+
+      position = new google.maps.LatLng(data.latitude, data.longitude);
+
+      getMarker().setPosition(position);
+      getCircle().setCenter(position);
+
+      map.panTo(position);
+      getInfo().open(map, getMarker());
+    }
+
   };
 
   var fetchJacobLocation = function() {
@@ -92,9 +95,7 @@ jQuery(function($) {
         accuracy: data.location.horizontalAccuracy,
         latitude: data.location.latitude,
         longitude: data.location.longitude,
-        time: data.location.timeStamp,
-        position: new google.maps.LatLng(data.location.latitude, data.location.longitude),
-        moment: moment(data.location.timeStamp)
+        time: data.location.timeStamp
       });
     });
   };
