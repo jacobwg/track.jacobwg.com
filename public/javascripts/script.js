@@ -95,10 +95,10 @@ jQuery(function($) {
   var fetchJacobLocation = function() {
     $.getJSON('/location.json', function(data) {
       updateJacobLocation({
-        accuracy: data.location.horizontalAccuracy,
-        latitude: data.location.latitude,
-        longitude: data.location.longitude,
-        time: data.location.timeStamp
+        accuracy: data.horizontalAccuracy,
+        latitude: data.latitude,
+        longitude: data.longitude,
+        time: data.timeStamp
       });
     });
   };
