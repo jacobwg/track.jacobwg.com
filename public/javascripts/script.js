@@ -5,7 +5,7 @@ var Settings = {
 jQuery(function($) {
   var map;
 
-  var marker, circle, info, position;
+  var marker, circle, info, position, user_marker, user_position;
 
   var previous = {
     latitude: 0,
@@ -49,6 +49,22 @@ jQuery(function($) {
       });
     return circle;
   }
+
+  var getUserMarker = function() {
+    if (!user_marker) {
+      user_marker = new google.maps.Marker({
+        clickable: false,
+        icon: new google.maps.MarkerImage('//maps.gstatic.com/mapfiles/mobile/mobileimgs2.png',
+                                                        new google.maps.Size(22,22),
+                                                        new google.maps.Point(0,18),
+                                                        new google.maps.Point(11,11)),
+        shadow: null,
+        zIndex: 999,
+        map: map
+      });
+    }
+    return user_marker;
+  };
 
   var setMessage = function(data) {
     if (data.accuracy > 50) {
@@ -106,5 +122,15 @@ jQuery(function($) {
   };
 
   setInterval(fetchJacobLocation, 6000);
+
+  if (navigator.geolocation) navigator.geolocation.watchPosition(function(pos) {
+    //console.log(pos);
+    user_position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+    getUserMarker().setPosition(user_position);
+  }, function(error) {
+    // ...
+  }, {
+    enableHighAccuracy: true
+  });
 
 });
