@@ -72,7 +72,7 @@ jQuery(function($) {
     } else {
       $('#message').attr('class', 'success');
     }
-    $('#left').html('Located at ' + moment(data.time).format('h:mm:ss a on MMMM Do, YYYY'));
+    $('#left').html('Located ' + moment(data.time).format('(h:mm:ss a)'));
     $('#right').html('<strong>Accuracy:</strong> within ' + Math.round(data.accuracy * 3.281) + ' feet');
   };
 
@@ -123,7 +123,7 @@ jQuery(function($) {
 
   setInterval(fetchJacobLocation, 6000);
 
-  if (navigator.geolocation) navigator.geolocation.watchPosition(function(pos) {
+  /*if (navigator.geolocation) navigator.geolocation.watchPosition(function(pos) {
     //console.log(pos);
     user_position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
     getUserMarker().setPosition(user_position);
@@ -131,6 +131,6 @@ jQuery(function($) {
     // ...
   }, {
     enableHighAccuracy: true
-  });
+  });*/
 
 });
