@@ -22,11 +22,18 @@ jQuery(function($) {
   });
 
   var getMarker = function() {
-    if (!marker)
+    if (!marker) {
       marker = new google.maps.Marker({
         title: Settings.user_name + '\'s Current Location',
         map: map
       });
+      info = new google.maps.InfoWindow({
+        content: Settings.user_name + '\'s Location'
+      });
+      google.maps.event.addListener(getMarker(), 'click', function() {
+        info.open(map, getMarker());
+      });
+    }
     return marker;
   };
 
@@ -43,19 +50,15 @@ jQuery(function($) {
     return circle;
   }
 
-  var getInfo = function() {
-    if (!info) {
-      info = new google.maps.InfoWindow();
-      google.maps.event.addListener(getMarker(), 'click', function() {
-        info.open(map, getMarker());
-      });
+  var setMessage = function(data) {
+    if (data.accuracy > 50) {
+      $('#message').attr('class', 'warn');
+    } else {
+      $('#message').attr('class', 'success');
     }
-    return info;
-  }
-
-  var getInfoText = function(data) {
-    return Settings.user_name + ' was within ' + Math.round(data.accuracy) + ' meters from this point<br />at ' + moment(data.time).format('h:mm:ss a on MMMM Do, YYYY');
-  }
+    $('#left').html('Located at ' + moment(data.time).format('h:mm:ss a on MMMM Do, YYYY'));
+    $('#right').html('<strong>Accuracy:</strong> within ' + Math.round(data.accuracy * 3.281) + ' feet');
+  };
 
   var updateJacobLocation = function(data) {
 
@@ -68,8 +71,6 @@ jQuery(function($) {
     if (data.accuracy != previous.accuracy || data.time != previous.time) {
       previous.accuracy = data.accuracy;
       previous.time = data.time;
-
-      getInfo().setContent(getInfoText(data));
     }
 
     if (previous.zoom === 0) {
@@ -87,8 +88,9 @@ jQuery(function($) {
       getCircle().setCenter(position);
 
       map.panTo(position);
-      getInfo().open(map, getMarker());
     }
+
+    setMessage(data);
 
   };
 
