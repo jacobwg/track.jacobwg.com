@@ -11,6 +11,25 @@
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvxxgu-P7GgABG2-PWXnFTrTQTXh4MvdQ&sensor=true"></script>
     <script type="text/javascript" src="javascripts/moment.js"></script>
     <script type="text/javascript" src="javascripts/script.js"></script>
+
+    <!-- Start of Woopra Code -->
+    <script type="text/javascript">
+    function woopraReady(tracker) {
+        tracker.setDomain('track.jacobwg.com');
+        tracker.setIdleTimeout(600000);
+        tracker.track();
+        return false;
+    }
+    (function() {
+        var wsc = document.createElement('script');
+        wsc.src = document.location.protocol+'//static.woopra.com/js/woopra.js';
+        wsc.type = 'text/javascript';
+        wsc.async = true;
+        var ssc = document.getElementsByTagName('script')[0];
+        ssc.parentNode.insertBefore(wsc, ssc);
+    })();
+    </script>
+    <!-- End of Woopra Code -->
   </head>
   <body>
     <div id="message" class="clearfix error">
