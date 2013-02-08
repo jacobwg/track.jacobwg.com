@@ -111,7 +111,7 @@ jQuery(function($) {
   };
 
   var fetchJacobLocation = function() {
-    $.getJSON('/location.json', function(data) {
+    $.getJSON('http://api.jacobwg.com/v1/location.json?callback=?', function(data) {
       updateJacobLocation({
         accuracy: data.horizontalAccuracy,
         latitude: data.latitude,
