@@ -14,7 +14,7 @@ jQuery(function($) {
   });
 
   var fetchLocationHistory = function() {
-    $.getJSON('http://localhost:3000/v1/location/history.json?callback=?', function(data) {
+    $.getJSON('http://api.jacobwg.com/v1/location/history.json?callback=?', function(data) {
       data = $.map(data, function(el, id) {
         return new google.maps.LatLng(el.latitude, el.longitude);
       });
