@@ -1,7 +1,7 @@
 require 'bundler/capistrano'
 
 set :application, 'track-jacob'
-set :repository,  'https://github.com/jacobwg/track-jacob.git'
+set :repository,  'https://github.com/jacobwg/track.jacobwg.com.git'
 
 role :web, 'quorra.jacobwg.com'
 role :app, 'quorra.jacobwg.com'
