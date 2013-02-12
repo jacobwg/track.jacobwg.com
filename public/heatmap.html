@@ -14,7 +14,19 @@
   </head>
   <body>
     <div id="message" class="clearfix success">
-      <span id="left">Heatmap</span>
+      <div id="left">
+        <select id="time-select">
+          <option>All Times</option>
+          <option data-option='daytime' data-value='true'>Daytime</option>
+          <option data-option='daytime' data-value='false'>Nighttime</option>
+        </select>
+
+        <select id="home-select">
+          <option data-option='home' data-value='false'>Hide Home</option>
+          <option>Show Home</option>
+        </select>
+      </div>
+
       <span id="right"></span>
     </div>
     <div id="map_canvas" style="width:100%; height:100%"></div>
